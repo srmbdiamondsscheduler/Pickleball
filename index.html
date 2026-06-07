@@ -20,7 +20,6 @@
   --green: #2d6a0a; --green-bg: #eaf3de; --green-border: #8fcc52;
   --red: #a32020; --red-bg: #fdeaea; --red-border: #e98080;
   --amber: #7a4800; --amber-bg: #FEF3E2; --amber-border: #f5c26b;
-  --gold: #b8860b;
   --r: 12px; --rlg: 16px;
 }
 html, body { height: 100%; overflow: hidden; }
@@ -44,16 +43,15 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .view { display: none; position: absolute; inset: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .view.active { display: block; }
 .scroll-area { padding: 16px 14px 28px; max-width: 540px; margin: 0 auto; }
-
 .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
 
 /* ── Player list ── */
 .player-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
-.player-row { display: flex; align-items: center; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); overflow: hidden; min-height: 58px; transition: border-color 0.13s, background 0.13s; }
+.player-row { display: flex; align-items: center; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); overflow: hidden; min-height: 58px; }
 .player-row.active { background: var(--blue-bg); border-color: var(--blue-mid); }
 .player-row.editing { border-color: var(--blue-mid); background: var(--blue-bg); }
 .row-toggle { flex: 1; display: flex; align-items: center; gap: 12px; padding: 0 14px; min-height: 58px; cursor: pointer; min-width: 0; user-select: none; }
-.row-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--text3); flex-shrink: 0; transition: all 0.13s; }
+.row-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--text3); flex-shrink: 0; }
 .player-row.active .row-dot { background: var(--blue); border-color: var(--blue); }
 .row-name { font-size: 16px; font-weight: 500; color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .player-row.active .row-name { color: var(--blue-dark); }
@@ -100,40 +98,106 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .sched-meta { font-size: 13px; color: var(--text2); margin-top: 2px; }
 .regen-btn { padding: 10px 14px; border-radius: var(--r); border: 1.5px solid var(--border); background: var(--surface); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: var(--text); cursor: pointer; touch-action: manipulation; }
 .regen-btn:active { background: var(--surface2); }
+.progress-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); font-size: 13px; color: var(--text2); }
+.progress-row strong { color: var(--text); }
 
 .rounds { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
 .round-card { background: var(--surface); border-radius: var(--rlg); border: 1px solid var(--border); overflow: hidden; }
 .round-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--surface2); border-bottom: 1px solid var(--border); }
 .round-num { font-size: 14px; font-weight: 600; }
-.round-info { font-size: 12px; color: var(--text3); }
+.round-badge { font-size: 11px; color: var(--text3); }
 .games { padding: 10px 12px; display: flex; flex-direction: column; gap: 10px; }
 
-/* ── Game block with score entry ── */
-.game-block { background: var(--bg); border-radius: 10px; overflow: hidden; }
-.game-court-bar { font-size: 11px; font-weight: 700; color: var(--blue); letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 12px 4px; }
-.game-body { display: flex; align-items: stretch; gap: 0; }
-.team-side { flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 4px 10px 10px; min-width: 0; }
-.pname { font-size: 13px; font-weight: 500; padding: 5px 8px; border-radius: 99px; background: var(--surface); color: var(--text); border: 1px solid var(--border); text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.vs-divider { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 4px; flex-shrink: 0; gap: 6px; }
-.vs-label { font-size: 11px; font-weight: 700; color: var(--text3); }
-
-/* Score buttons */
-.score-area { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 0 10px; }
-.score-btn {
-  width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--border);
-  background: var(--surface); font-family: 'DM Sans', sans-serif;
-  font-size: 14px; font-weight: 700; cursor: pointer; touch-action: manipulation;
-  display: flex; align-items: center; justify-content: center; transition: all 0.12s;
-  color: var(--text2);
+/* ── Game card ── */
+.game-card {
+  background: var(--bg);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1.5px solid transparent;
+  transition: border-color 0.15s;
 }
-.score-btn.win  { background: var(--green-bg); border-color: var(--green-border); color: var(--green); }
-.score-btn.loss { background: var(--red-bg);   border-color: var(--red-border);   color: var(--red); }
-.score-lbl { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text3); }
+.game-card.scored-a { border-color: var(--green-border); }
+.game-card.scored-b { border-color: var(--green-border); }
 
-.game-block.result-a .team-side:first-child .pname { background: var(--green-bg); border-color: var(--green-border); color: var(--green); font-weight: 600; }
-.game-block.result-b .team-side:last-child  .pname { background: var(--green-bg); border-color: var(--green-border); color: var(--green); font-weight: 600; }
-.game-block.result-a .score-btn.win-a,
-.game-block.result-b .score-btn.win-b { box-shadow: 0 0 0 2px var(--green); }
+.game-court-bar {
+  font-size: 11px; font-weight: 700; color: var(--blue);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 8px 12px 6px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.game-scored-pill {
+  font-size: 11px; font-weight: 600;
+  background: var(--green-bg); color: var(--green);
+  border: 1px solid var(--green-border);
+  border-radius: 99px; padding: 2px 8px;
+  display: none;
+}
+.game-card.scored-a .game-scored-pill,
+.game-card.scored-b .game-scored-pill { display: inline-block; }
+
+/* Team rows with score input */
+.game-team-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 12px;
+}
+.game-team-row.winner { background: var(--green-bg); }
+.game-team-row.loser  { background: var(--red-bg); }
+
+.team-names { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.pname {
+  font-size: 13px; font-weight: 500; padding: 4px 9px;
+  border-radius: 99px; background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); text-align: center;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.game-team-row.winner .pname { background: var(--green-bg); border-color: var(--green-border); color: var(--green); font-weight: 600; }
+.game-team-row.loser  .pname { background: var(--red-bg);   border-color: var(--red-border);   color: var(--red); }
+
+/* Score input stepper */
+.score-stepper {
+  display: flex; flex-direction: column; align-items: center; gap: 0; flex-shrink: 0;
+}
+.step-btn {
+  width: 34px; height: 28px;
+  border: 1px solid var(--border); background: var(--surface);
+  font-size: 16px; font-weight: 600; color: var(--text2);
+  cursor: pointer; touch-action: manipulation;
+  display: flex; align-items: center; justify-content: center;
+  user-select: none;
+}
+.step-btn:first-child { border-radius: 6px 6px 0 0; border-bottom: none; }
+.step-btn:last-child  { border-radius: 0 0 6px 6px; }
+.step-btn:active { background: var(--surface2); }
+.score-display {
+  width: 34px; height: 36px;
+  border: 1px solid var(--border); border-top: none; border-bottom: none;
+  background: var(--surface);
+  font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 700;
+  color: var(--text); text-align: center;
+  outline: none; -webkit-appearance: none; appearance: none;
+  padding: 0;
+}
+.score-display:focus { border-color: var(--blue-mid); background: var(--blue-bg); }
+.game-team-row.winner .step-btn,
+.game-team-row.winner .score-display { border-color: var(--green-border); background: var(--green-bg); color: var(--green); }
+.game-team-row.loser .step-btn,
+.game-team-row.loser .score-display  { border-color: var(--red-border);   background: var(--red-bg);   color: var(--red); }
+
+.game-vs-row {
+  display: flex; align-items: center; justify-content: center;
+  padding: 3px 0; gap: 8px;
+}
+.game-vs-text { font-size: 11px; font-weight: 700; color: var(--text3); }
+.game-vs-score { font-size: 12px; font-weight: 600; color: var(--text2); flex: 1; text-align: center; }
+
+.game-footer { padding: 8px 12px 10px; display: flex; gap: 8px; }
+.clear-btn {
+  flex: 1; padding: 8px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface);
+  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+  color: var(--text3); cursor: pointer; touch-action: manipulation; text-align: center;
+}
+.clear-btn:active { background: var(--surface2); }
 
 .sitters { padding: 4px 12px 12px; font-size: 12px; color: var(--text2); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .sit-tag { font-size: 12px; padding: 3px 9px; border-radius: 99px; background: var(--surface2); color: var(--text3); border: 1px solid var(--border); }
@@ -141,33 +205,27 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 /* ── Leaderboard ── */
 .lb-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--rlg); overflow: hidden; margin-bottom: 16px; }
 .lb-head { padding: 12px 16px; background: var(--surface2); border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: space-between; }
-.lb-head-cols { display: flex; gap: 0; }
-.lb-head-col { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; width: 44px; text-align: center; }
-
-.lb-row { display: flex; align-items: center; padding: 11px 14px; border-bottom: 1px solid var(--border); gap: 10px; }
+.lb-head-cols { display: flex; }
+.lb-head-col { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; width: 42px; text-align: center; }
+.lb-row { display: flex; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--border); gap: 10px; }
 .lb-row:last-child { border-bottom: none; }
-.lb-rank { font-size: 16px; font-weight: 700; color: var(--text3); width: 28px; flex-shrink: 0; text-align: center; }
-.lb-rank.gold   { color: #c8a800; }
+.lb-rank { font-size: 16px; font-weight: 700; color: var(--text3); width: 26px; flex-shrink: 0; text-align: center; }
+.lb-rank.gold { color: #c8a800; }
 .lb-rank.silver { color: #8e8e93; }
 .lb-rank.bronze { color: #b06620; }
 .lb-name { flex: 1; font-size: 15px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.lb-stats { display: flex; gap: 0; flex-shrink: 0; }
-.lb-stat { width: 44px; text-align: center; }
-.lb-stat .val { font-size: 15px; font-weight: 700; }
-.lb-stat .sub { font-size: 10px; color: var(--text3); margin-top: 1px; }
+.lb-stats { display: flex; flex-shrink: 0; }
+.lb-stat { width: 42px; text-align: center; }
+.lb-stat .val { font-size: 14px; font-weight: 700; }
+.lb-stat .sub { font-size: 10px; color: var(--text3); }
 .lb-stat.w .val { color: var(--green); }
 .lb-stat.l .val { color: var(--red); }
-.lb-stat.pct .val { color: var(--blue); font-size: 13px; }
-.lb-win-bar { height: 4px; background: var(--surface2); border-radius: 2px; margin: 2px 14px 8px; overflow: hidden; }
-.lb-win-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 0.4s; }
-
-.no-results { padding: 24px; text-align: center; font-size: 13px; color: var(--text3); }
-
+.lb-stat.pt .val { color: var(--blue); font-size: 12px; }
+.lb-win-bar { height: 4px; background: var(--surface2); border-radius: 2px; margin: 0 14px 8px; }
+.lb-win-fill { height: 100%; background: var(--green); border-radius: 2px; }
+.no-results { padding: 28px 20px; text-align: center; font-size: 13px; color: var(--text3); line-height: 1.6; }
 .reset-btn { width: 100%; padding: 14px; border-radius: var(--rlg); border: 1.5px solid var(--red-border); background: var(--red-bg); color: var(--red); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; touch-action: manipulation; margin-top: 8px; }
 .reset-btn:active { opacity: 0.7; }
-
-.progress-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); font-size: 13px; color: var(--text2); }
-.progress-row strong { color: var(--text); }
 </style>
 </head>
 <body>
@@ -187,7 +245,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 
 <div class="views">
 
-  <!-- ── ROSTER ── -->
+  <!-- ROSTER -->
   <div class="view active" id="view-roster">
     <div class="scroll-area">
       <p class="section-label">Tap name to toggle present · ✏️ rename · × remove</p>
@@ -218,7 +276,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
     </div>
   </div>
 
-  <!-- ── SCHEDULE ── -->
+  <!-- SCHEDULE -->
   <div class="view" id="view-schedule">
     <div class="scroll-area">
       <div class="sched-top">
@@ -240,12 +298,12 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
     </div>
   </div>
 
-  <!-- ── LEADERBOARD ── -->
+  <!-- RESULTS -->
   <div class="view" id="view-stats">
     <div class="scroll-area">
       <p class="section-label">Tonight's leaderboard</p>
       <div id="lb-out">
-        <div class="no-results">No results yet — enter scores on the Schedule tab.</div>
+        <div class="no-results">No scores yet — enter scores on the Schedule tab.</div>
       </div>
       <button class="reset-btn" id="btn-reset" style="display:none">🗑 Reset scores for new night</button>
     </div>
@@ -260,21 +318,20 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 </nav>
 
 <script>
-// ── Storage ──────────────────────────────────────────────────────────────
+// ── Storage ───────────────────────────────────────────────────────────────
 const store = (() => {
   const tryS = s => { try { s.setItem('__t__','1'); s.removeItem('__t__'); return s; } catch(e){ return null; } };
-  const s = tryS(localStorage) || tryS(sessionStorage) || (() => {
-    const m={}; return { getItem: k=>m[k]||null, setItem:(k,v)=>{m[k]=v;} };
-  })();
-  return { get: k=>{ try{return s.getItem(k);}catch(e){return null;} }, set:(k,v)=>{ try{s.setItem(k,v);}catch(e){} } };
+  const s = tryS(localStorage) || tryS(sessionStorage) || (() => { const m={}; return { getItem:k=>m[k]||null, setItem:(k,v)=>{m[k]=v;} }; })();
+  return { get:k=>{ try{return s.getItem(k);}catch(e){return null;} }, set:(k,v)=>{ try{s.setItem(k,v);}catch(e){} } };
 })();
 
 const KEY_ROSTER  = 'pb_roster_v6';
-const KEY_SCHED   = 'pb_sched_v1';
-const KEY_RESULTS = 'pb_results_v1';
+const KEY_SCHED   = 'pb_sched_v2';
+const KEY_RESULTS = 'pb_scores_v2';
 const KEY_BANNER  = 'pb_banner';
 const MAX = 20;
 
+// ── DEFAULT PLAYERS — replace these names ─────────────────────────────────
 const DEFAULTS = [
   "Player 1","Player 2","Player 3","Player 4",
   "Player 5","Player 6","Player 7","Player 8",
@@ -282,30 +339,30 @@ const DEFAULTS = [
 ];
 
 let roster   = [];
-let schedule = [];   // [{games:[[a,b,c,d],...], sitters:[...]}]
-let results  = {};   // key "r{ri}_g{gi}" => 'a' | 'b' | null
+let schedule = [];
+// scores: { "r0_g0": { sa: 11, sb: 7 } }  — null values mean not entered
+let scores   = {};
 let editing  = -1;
 
 // ── Load / Save ───────────────────────────────────────────────────────────
 function loadAll() {
-  try { const r=store.get(KEY_ROSTER); if(r){ const p=JSON.parse(r); if(Array.isArray(p)&&p.length&&p[0].name){ roster=p; } else { roster=DEFAULTS.map(n=>({name:n,active:false})); } } else { roster=DEFAULTS.map(n=>({name:n,active:false})); } } catch(e){ roster=DEFAULTS.map(n=>({name:n,active:false})); }
-  try { const s=store.get(KEY_SCHED); if(s){ schedule=JSON.parse(s)||[]; } } catch(e){}
-  try { const r=store.get(KEY_RESULTS); if(r){ results=JSON.parse(r)||{}; } } catch(e){}
+  try { const r=store.get(KEY_ROSTER); if(r){const p=JSON.parse(r);if(Array.isArray(p)&&p.length&&p[0].name){roster=p;}else{roster=DEFAULTS.map(n=>({name:n,active:false}));}}else{roster=DEFAULTS.map(n=>({name:n,active:false}));} } catch(e){roster=DEFAULTS.map(n=>({name:n,active:false}));}
+  try { const s=store.get(KEY_SCHED);   if(s){schedule=JSON.parse(s)||[];} } catch(e){}
+  try { const r=store.get(KEY_RESULTS); if(r){scores=JSON.parse(r)||{};} }   catch(e){}
 }
-function saveRoster()  { store.set(KEY_ROSTER,  JSON.stringify(roster)); }
-function saveSchedule(){ store.set(KEY_SCHED,   JSON.stringify(schedule)); store.set(KEY_RESULTS, JSON.stringify(results)); }
+function saveRoster()  { store.set(KEY_ROSTER, JSON.stringify(roster)); }
+function saveScores()  { store.set(KEY_SCHED, JSON.stringify(schedule)); store.set(KEY_RESULTS, JSON.stringify(scores)); }
 
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 // ── Banner ────────────────────────────────────────────────────────────────
 function initBanner(){
-  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
-  const standalone=window.navigator.standalone===true;
-  if(isIOS&&!standalone&&!store.get(KEY_BANNER)){ document.getElementById('install-banner').style.display='flex'; }
+  if(/iphone|ipad|ipod/i.test(navigator.userAgent) && !window.navigator.standalone && !store.get(KEY_BANNER)){
+    document.getElementById('install-banner').style.display='flex';
+  }
 }
-function dismissBanner(){ store.set(KEY_BANNER,'1'); document.getElementById('install-banner').style.display='none'; }
 
-// ── Bind helper (touchend + click fallback) ───────────────────────────────
+// ── Bind helper ───────────────────────────────────────────────────────────
 function bindBtn(el, fn){
   if(!el) return;
   let touched=false;
@@ -313,18 +370,18 @@ function bindBtn(el, fn){
   el.addEventListener('click', ()=>{ if(!touched) fn(); });
 }
 
-// ── Tab switching ─────────────────────────────────────────────────────────
+// ── Tab ───────────────────────────────────────────────────────────────────
 function switchTab(tab){
   ['roster','schedule','stats'].forEach(t=>{
-    document.getElementById(`view-${t}`).className  = 'view'+(t===tab?' active':'');
-    document.getElementById(`nav-${t}`).className   = 'nav-btn'+(t===tab?' active':'');
+    document.getElementById(`view-${t}`).className = 'view'+(t===tab?' active':'');
+    document.getElementById(`nav-${t}`).className  = 'nav-btn'+(t===tab?' active':'');
   });
   if(tab==='stats') renderLeaderboard();
 }
 
-// ── Roster render ─────────────────────────────────────────────────────────
+// ── Roster ────────────────────────────────────────────────────────────────
 function renderRoster(){
-  const list = document.getElementById('player-list');
+  const list=document.getElementById('player-list');
   let html='';
   roster.forEach((p,i)=>{
     if(editing===i){
@@ -365,7 +422,7 @@ function renderRoster(){
       bindBtn(document.getElementById(`rdel-${i}`),  ()=>doDel(i));
     }
   });
-  document.getElementById('add-row').style.display = roster.length>=MAX?'none':'';
+  document.getElementById('add-row').style.display=roster.length>=MAX?'none':'';
   updateStatus();
 }
 
@@ -377,182 +434,249 @@ function updateStatus(){
   const courts=Math.min(Math.floor(sel/4),mc), sitting=sel-courts*4;
   const btn=document.getElementById('gen-btn'), info=document.getElementById('info-box');
   if(sel<4){ btn.disabled=true; btn.textContent='Need at least 4 players →'; info.style.display='none'; }
-  else {
-    btn.disabled=false; btn.textContent='Generate Schedule →';
-    if(sitting>0){ info.style.display='block'; info.textContent=`${sel} players, ${courts} court${courts>1?'s':''}: ${sitting} player${sitting>1?'s':''} sit out each round, rotated fairly.`; }
-    else info.style.display='none';
-  }
+  else { btn.disabled=false; btn.textContent='Generate Schedule →'; if(sitting>0){info.style.display='block';info.textContent=`${sel} players, ${courts} court${courts>1?'s':''}: ${sitting} player${sitting>1?'s':''} sit out each round, rotated fairly.`;}else{info.style.display='none';} }
 }
 
 function doToggle(i){ roster[i].active=!roster[i].active; saveRoster(); renderRoster(); }
 function doCommit(i){
   const inp=document.getElementById(`einp-${i}`);
-  if(inp){ const name=inp.value.trim(); if(name&&!roster.find((p,j)=>j!==i&&p.name.toLowerCase()===name.toLowerCase())){ roster[i].name=name; } }
+  if(inp){const name=inp.value.trim();if(name&&!roster.find((p,j)=>j!==i&&p.name.toLowerCase()===name.toLowerCase())){roster[i].name=name;}}
   editing=-1; saveRoster(); renderRoster();
 }
-function doDel(i){ if(!confirm(`Remove "${roster[i].name}"?`)) return; roster.splice(i,1); if(editing===i)editing=-1; saveRoster(); renderRoster(); }
+function doDel(i){ if(!confirm(`Remove "${roster[i].name}"?`))return; roster.splice(i,1); if(editing===i)editing=-1; saveRoster(); renderRoster(); }
 function doAdd(){
-  if(roster.length>=MAX) return;
+  if(roster.length>=MAX)return;
   const inp=document.getElementById('new-name'), name=inp.value.trim();
-  if(!name) return;
-  if(roster.find(p=>p.name.toLowerCase()===name.toLowerCase())){ inp.value=''; return; }
+  if(!name)return;
+  if(roster.find(p=>p.name.toLowerCase()===name.toLowerCase())){inp.value='';return;}
   roster.push({name,active:true}); saveRoster(); inp.value=''; renderRoster();
   setTimeout(()=>{ document.getElementById('player-list').lastElementChild?.scrollIntoView({behavior:'smooth',block:'nearest'}); },60);
 }
 
-// ── Schedule generation ───────────────────────────────────────────────────
+// ── Generate schedule ─────────────────────────────────────────────────────
 function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 
 function generate(){
-  if(schedule.length>0 && Object.keys(results).length>0){
-    if(!confirm('Generating a new schedule will clear all scores. Continue?')) return;
+  if(schedule.length>0 && Object.keys(scores).length>0){
+    if(!confirm('Generating a new schedule will clear all scores. Continue?'))return;
   }
-  results={};
+  scores={};
   const players=roster.filter(p=>p.active).map(p=>p.name);
-  const n=players.length; if(n<4) return;
+  const n=players.length; if(n<4)return;
   const mc=parseInt(document.getElementById('courts-slider').value,10);
   const courts=Math.min(Math.floor(n/4),mc), sitN=n-courts*4;
   const ROUNDS=Math.max(n-1,5);
   const pc={},oc={},sc={};
   players.forEach(p=>{ pc[p]={};oc[p]={};sc[p]=0; players.forEach(q=>{ if(p!==q){pc[p][q]=0;oc[p][q]=0;} }); });
-  function score(games,sitters){ let s=0; games.forEach(([a,b,c,d])=>{ s+=(pc[a][b]||0)*10+(pc[c][d]||0)*10; [a,b].forEach(p=>[c,d].forEach(q=>{s+=(oc[p][q]||0)*5;})); }); sitters.forEach(p=>s+=(sc[p]||0)*20); return s; }
-  function makeRound(){ let best=null,bestS=Infinity; for(let t=0;t<200;t++){ const sp=shuffle(players),sitters=sp.slice(0,sitN),active=sp.slice(sitN),games=[]; for(let i=0;i<active.length;i+=4) games.push([active[i],active[i+1],active[i+2],active[i+3]]); const s=score(games,sitters); if(s<bestS){bestS=s;best={games,sitters};} } best.games.forEach(([a,b,c,d])=>{ pc[a][b]++;pc[b][a]++;pc[c][d]++;pc[d][c]++; [a,b].forEach(p=>[c,d].forEach(q=>{oc[p][q]++;oc[q][p]++;})); }); best.sitters.forEach(p=>sc[p]++); return best; }
+  function scoreF(games,sitters){ let s=0; games.forEach(([a,b,c,d])=>{ s+=(pc[a][b]||0)*10+(pc[c][d]||0)*10; [a,b].forEach(p=>[c,d].forEach(q=>{s+=(oc[p][q]||0)*5;})); }); sitters.forEach(p=>s+=(sc[p]||0)*20); return s; }
+  function makeRound(){ let best=null,bestS=Infinity; for(let t=0;t<200;t++){ const sp=shuffle(players),sitters=sp.slice(0,sitN),active=sp.slice(sitN),games=[]; for(let i=0;i<active.length;i+=4)games.push([active[i],active[i+1],active[i+2],active[i+3]]); const s=scoreF(games,sitters); if(s<bestS){bestS=s;best={games,sitters};} } best.games.forEach(([a,b,c,d])=>{ pc[a][b]++;pc[b][a]++;pc[c][d]++;pc[d][c]++; [a,b].forEach(p=>[c,d].forEach(q=>{oc[p][q]++;oc[q][p]++;})); }); best.sitters.forEach(p=>sc[p]++); return best; }
   schedule=[];
   for(let r=0;r<ROUNDS;r++) schedule.push(makeRound());
-  saveSchedule();
+  saveScores();
   renderSchedule();
   switchTab('schedule');
 }
 
-// ── Score a game ──────────────────────────────────────────────────────────
-function setResult(ri, gi, winner){
+// ── Score helpers ─────────────────────────────────────────────────────────
+function getScore(ri,gi){ return scores[`r${ri}_g${gi}`]||{sa:null,sb:null}; }
+
+function setScore(ri, gi, side, val){
   const key=`r${ri}_g${gi}`;
-  // Toggle off if same button tapped again
-  results[key] = results[key]===winner ? null : winner;
-  saveSchedule();
-  renderSchedule();
-  renderLeaderboard();
+  if(!scores[key]) scores[key]={sa:null,sb:null};
+  scores[key][side]=val;
+  saveScores();
+  // re-render just this game card
+  rerenderGame(ri,gi);
   updateHeaderSub();
+  renderLeaderboard(); // live update
+}
+
+function clearScore(ri,gi){
+  delete scores[`r${ri}_g${gi}`];
+  saveScores();
+  rerenderGame(ri,gi);
+  updateHeaderSub();
+  renderLeaderboard();
+}
+
+function getWinner(ri,gi){
+  const {sa,sb}=getScore(ri,gi);
+  if(sa===null||sb===null) return null;
+  if(sa===sb) return null; // tie
+  return sa>sb?'a':'b';
 }
 
 function updateHeaderSub(){
   const total=schedule.reduce((s,r)=>s+r.games.length,0);
-  const scored=Object.values(results).filter(v=>v!==null).length;
-  document.getElementById('header-sub').textContent = total>0 ? `${scored} of ${total} games scored` : 'Fair matchup scheduler';
+  const scored=schedule.reduce((s,r,ri)=>s+r.games.filter((_,gi)=>getWinner(ri,gi)!==null).length,0);
+  document.getElementById('header-sub').textContent = total>0?`${scored} of ${total} games scored`:'Fair matchup scheduler';
 }
 
 // ── Render schedule ───────────────────────────────────────────────────────
 function renderSchedule(){
-  if(!schedule.length){ document.getElementById('rounds-out').innerHTML='<div style="padding:40px 20px;text-align:center;color:var(--text3);font-size:14px">Go to Roster and tap Generate.</div>'; return; }
-  const mc = parseInt(document.getElementById('courts-slider').value||'4',10);
-  const players = roster.filter(p=>p.active).map(p=>p.name);
-  const courts = schedule[0]?schedule[0].games.length:1;
+  if(!schedule.length){
+    document.getElementById('rounds-out').innerHTML='<div style="padding:40px 20px;text-align:center;color:var(--text3);font-size:14px">Go to Roster and tap Generate.</div>';
+    document.getElementById('progress-bar-row').style.display='none';
+    return;
+  }
+  const players=roster.filter(p=>p.active).map(p=>p.name);
+  const courts=schedule[0].games.length;
   document.getElementById('sched-meta').textContent=`${players.length} players · ${schedule.length} rounds · ${courts} court${courts!==1?'s':''}`;
-
-  const total=schedule.reduce((s,r)=>s+r.games.length,0);
-  const scored=Object.values(results).filter(v=>v!==null).length;
-  const pbRow=document.getElementById('progress-bar-row');
-  pbRow.style.display='flex';
-  document.getElementById('progress-text').textContent=`${scored} / ${total}`;
 
   let html='';
   schedule.forEach((round,ri)=>{
-    const gameBlocks=round.games.map((game,gi)=>{
-      const [a,b,c,d]=game;
-      const key=`r${ri}_g${gi}`;
-      const res=results[key]||null;
-      const blockClass=res==='a'?'result-a':res==='b'?'result-b':'';
-      return `<div class="game-block ${blockClass}" id="gb-${ri}-${gi}">
-        <div class="game-court-bar">Court ${gi+1}</div>
-        <div class="game-body">
-          <div class="team-side">
-            <span class="pname">${esc(a)}</span>
-            <span class="pname">${esc(b)}</span>
-          </div>
-          <div class="vs-divider">
-            <div class="score-area">
-              <button class="score-btn win-a ${res==='a'?'win':''}" id="btn-wa-${ri}-${gi}" type="button" title="Team A wins">W</button>
-              <span class="score-lbl">A</span>
-            </div>
-            <span class="vs-label">vs</span>
-            <div class="score-area">
-              <span class="score-lbl">B</span>
-              <button class="score-btn win-b ${res==='b'?'win':''}" id="btn-wb-${ri}-${gi}" type="button" title="Team B wins">W</button>
-            </div>
-          </div>
-          <div class="team-side">
-            <span class="pname">${esc(c)}</span>
-            <span class="pname">${esc(d)}</span>
-          </div>
-        </div>
-      </div>`;
-    }).join('');
+    const gameCards=round.games.map((_,gi)=>buildGameCard(ri,gi,round.games[gi])).join('');
     const sitHtml=round.sitters.length?`<div class="sitters">Sitting out: ${round.sitters.map(s=>`<span class="sit-tag">${esc(s)}</span>`).join('')}</div>`:'';
     html+=`<div class="round-card">
-      <div class="round-head"><span class="round-num">Round ${ri+1}</span><span class="round-info">${round.games.length} game${round.games.length!==1?'s':''}</span></div>
-      <div class="games">${gameBlocks}</div>${sitHtml}
+      <div class="round-head"><span class="round-num">Round ${ri+1}</span><span class="round-badge">${round.games.length} game${round.games.length!==1?'s':''}</span></div>
+      <div class="games" id="games-${ri}">${gameCards}</div>${sitHtml}
     </div>`;
   });
   document.getElementById('rounds-out').innerHTML=html;
 
-  // Bind score buttons
-  schedule.forEach((round,ri)=>{
-    round.games.forEach((_,gi)=>{
-      bindBtn(document.getElementById(`btn-wa-${ri}-${gi}`), ()=>setResult(ri,gi,'a'));
-      bindBtn(document.getElementById(`btn-wb-${ri}-${gi}`), ()=>setResult(ri,gi,'b'));
-    });
-  });
+  // Bind all score inputs
+  schedule.forEach((round,ri)=>{ round.games.forEach((_,gi)=>bindGameCard(ri,gi)); });
+
+  const total=schedule.reduce((s,r)=>s+r.games.length,0);
+  const scored=schedule.reduce((s,r,ri)=>s+r.games.filter((_,gi)=>getWinner(ri,gi)!==null).length,0);
+  document.getElementById('progress-bar-row').style.display='flex';
+  document.getElementById('progress-text').textContent=`${scored} / ${total}`;
+  updateHeaderSub();
+}
+
+function buildGameCard(ri,gi,game){
+  const [a,b,c,d]=game;
+  const {sa,sb}=getScore(ri,gi);
+  const winner=getWinner(ri,gi);
+  const cardClass=winner==='a'?'scored-a':winner==='b'?'scored-b':'';
+  const teamAClass=winner==='a'?'winner':winner==='b'?'loser':'';
+  const teamBClass=winner==='b'?'winner':winner==='a'?'loser':'';
+  const saVal=sa===null?'':sa;
+  const sbVal=sb===null?'':sb;
+
+  return `<div class="game-card ${cardClass}" id="gc-${ri}-${gi}">
+    <div class="game-court-bar">
+      Court ${gi+1}
+      <span class="game-scored-pill">✓ ${saVal} – ${sbVal}</span>
+    </div>
+    <div class="game-team-row ${teamAClass}" id="tr-a-${ri}-${gi}">
+      <div class="team-names">
+        <span class="pname">${esc(a)}</span>
+        <span class="pname">${esc(b)}</span>
+      </div>
+      <div class="score-stepper">
+        <button class="step-btn" id="up-a-${ri}-${gi}" type="button">+</button>
+        <input class="score-display" id="sd-a-${ri}-${gi}" type="number" min="0" max="99" inputmode="numeric" pattern="[0-9]*" value="${saVal}" placeholder="–"/>
+        <button class="step-btn" id="dn-a-${ri}-${gi}" type="button">−</button>
+      </div>
+    </div>
+    <div class="game-vs-row">
+      <span class="game-vs-text">VS</span>
+    </div>
+    <div class="game-team-row ${teamBClass}" id="tr-b-${ri}-${gi}">
+      <div class="team-names">
+        <span class="pname">${esc(c)}</span>
+        <span class="pname">${esc(d)}</span>
+      </div>
+      <div class="score-stepper">
+        <button class="step-btn" id="up-b-${ri}-${gi}" type="button">+</button>
+        <input class="score-display" id="sd-b-${ri}-${gi}" type="number" min="0" max="99" inputmode="numeric" pattern="[0-9]*" value="${sbVal}" placeholder="–"/>
+        <button class="step-btn" id="dn-b-${ri}-${gi}" type="button">−</button>
+      </div>
+    </div>
+    <div class="game-footer">
+      <button class="clear-btn" id="cl-${ri}-${gi}" type="button">Clear score</button>
+    </div>
+  </div>`;
+}
+
+function bindGameCard(ri,gi){
+  const upA=document.getElementById(`up-a-${ri}-${gi}`);
+  const dnA=document.getElementById(`dn-a-${ri}-${gi}`);
+  const upB=document.getElementById(`up-b-${ri}-${gi}`);
+  const dnB=document.getElementById(`dn-b-${ri}-${gi}`);
+  const sdA=document.getElementById(`sd-a-${ri}-${gi}`);
+  const sdB=document.getElementById(`sd-b-${ri}-${gi}`);
+  const cl =document.getElementById(`cl-${ri}-${gi}`);
+
+  function getVal(inp){ const v=parseInt(inp.value,10); return isNaN(v)?null:Math.max(0,Math.min(99,v)); }
+
+  bindBtn(upA, ()=>{ const cur=getScore(ri,gi).sa||0; setScore(ri,gi,'sa',Math.min(99,cur+1)); });
+  bindBtn(dnA, ()=>{ const cur=getScore(ri,gi).sa||0; setScore(ri,gi,'sa',Math.max(0,cur-1)); });
+  bindBtn(upB, ()=>{ const cur=getScore(ri,gi).sb||0; setScore(ri,gi,'sb',Math.min(99,cur+1)); });
+  bindBtn(dnB, ()=>{ const cur=getScore(ri,gi).sb||0; setScore(ri,gi,'sb',Math.max(0,cur-1)); });
+  bindBtn(cl,  ()=>clearScore(ri,gi));
+
+  // Direct input
+  if(sdA) sdA.addEventListener('change', ()=>setScore(ri,gi,'sa',getVal(sdA)));
+  if(sdB) sdB.addEventListener('change', ()=>setScore(ri,gi,'sb',getVal(sdB)));
+  if(sdA) sdA.addEventListener('blur',   ()=>setScore(ri,gi,'sa',getVal(sdA)));
+  if(sdB) sdB.addEventListener('blur',   ()=>setScore(ri,gi,'sb',getVal(sdB)));
+}
+
+function rerenderGame(ri,gi){
+  const card=document.getElementById(`gc-${ri}-${gi}`);
+  if(!card||!schedule[ri]) return;
+  const game=schedule[ri].games[gi];
+  const tmp=document.createElement('div');
+  tmp.innerHTML=buildGameCard(ri,gi,game);
+  card.replaceWith(tmp.firstElementChild);
+  bindGameCard(ri,gi);
+
+  // update progress
+  const total=schedule.reduce((s,r)=>s+r.games.length,0);
+  const scored=schedule.reduce((s,r,ri2)=>s+r.games.filter((_,gi2)=>getWinner(ri2,gi2)!==null).length,0);
+  document.getElementById('progress-text').textContent=`${scored} / ${total}`;
 }
 
 // ── Leaderboard ───────────────────────────────────────────────────────────
 function renderLeaderboard(){
-  const stats={};
   const players=roster.filter(p=>p.active).map(p=>p.name);
-
-  // Init
-  players.forEach(p=>{ stats[p]={w:0,l:0,games:0}; });
+  const stats={};
+  players.forEach(p=>{ stats[p]={w:0,l:0,pf:0,pa:0,games:0}; });
 
   schedule.forEach((round,ri)=>{
     round.games.forEach((game,gi)=>{
       const [a,b,c,d]=game;
-      const res=results[`r${ri}_g${gi}`];
-      if(!res) return;
-      const winners=res==='a'?[a,b]:[c,d];
-      const losers =res==='a'?[c,d]:[a,b];
+      const winner=getWinner(ri,gi);
+      if(winner===null) return;
+      const {sa,sb}=getScore(ri,gi);
+      const winners=winner==='a'?[a,b]:[c,d];
+      const losers =winner==='a'?[c,d]:[a,b];
+      const wScore =winner==='a'?sa:sb;
+      const lScore =winner==='a'?sb:sa;
       [...winners,...losers].forEach(p=>{ if(stats[p]) stats[p].games++; });
-      winners.forEach(p=>{ if(stats[p]) stats[p].w++; });
-      losers.forEach(p=>{ if(stats[p]) stats[p].l++; });
+      winners.forEach(p=>{ if(stats[p]){stats[p].w++;stats[p].pf+=wScore;stats[p].pa+=lScore;} });
+      losers.forEach(p=>{  if(stats[p]){stats[p].l++;stats[p].pf+=lScore;stats[p].pa+=wScore;} });
     });
   });
 
   const played=players.filter(p=>stats[p]&&stats[p].games>0);
-  const hasAny=played.length>0;
-
   const lbOut=document.getElementById('lb-out');
   const resetBtn=document.getElementById('btn-reset');
 
-  if(!hasAny){ lbOut.innerHTML='<div class="no-results">No results yet — tap the <strong>W</strong> buttons on the Schedule tab after each game.</div>'; resetBtn.style.display='none'; return; }
-
+  if(!played.length){
+    lbOut.innerHTML='<div class="no-results">No scores yet — use the <strong>+ / −</strong> buttons on the Schedule tab to enter scores after each game.</div>';
+    resetBtn.style.display='none';
+    return;
+  }
   resetBtn.style.display='block';
 
-  // Sort: win%, then wins, then name
   const sorted=[...played].sort((a,b)=>{
-    const pctA=stats[a].games?stats[a].w/stats[a].games:0;
-    const pctB=stats[b].games?stats[b].w/stats[b].games:0;
-    if(pctB!==pctA) return pctB-pctA;
     if(stats[b].w!==stats[a].w) return stats[b].w-stats[a].w;
+    const pdA=stats[a].pf-stats[a].pa, pdB=stats[b].pf-stats[b].pa;
+    if(pdB!==pdA) return pdB-pdA;
     return a.localeCompare(b);
   });
 
-  // Also include players who sat out all night (0 games)
   const noGames=players.filter(p=>!stats[p]||stats[p].games===0);
-
   const rankEmoji=['🥇','🥈','🥉'];
   const rankClass=['gold','silver','bronze'];
 
   let rows='';
   sorted.forEach((p,idx)=>{
-    const {w,l,games}=stats[p];
+    const {w,l,pf,pa,games}=stats[p];
+    const pd=pf-pa;
     const pct=games?Math.round(w/games*100):0;
     const rank=idx<3?`<span class="lb-rank ${rankClass[idx]}">${rankEmoji[idx]}</span>`:`<span class="lb-rank">${idx+1}</span>`;
     rows+=`<div class="lb-row">
@@ -561,68 +685,55 @@ function renderLeaderboard(){
       <div class="lb-stats">
         <div class="lb-stat w"><div class="val">${w}</div><div class="sub">W</div></div>
         <div class="lb-stat l"><div class="val">${l}</div><div class="sub">L</div></div>
-        <div class="lb-stat pct"><div class="val">${pct}%</div><div class="sub">Win%</div></div>
+        <div class="lb-stat pt"><div class="val">${pd>0?'+':''}${pd}</div><div class="sub">+/−</div></div>
       </div>
     </div>
     <div class="lb-win-bar"><div class="lb-win-fill" style="width:${pct}%"></div></div>`;
   });
-
-  // Append sat-out players
   noGames.forEach(p=>{
-    rows+=`<div class="lb-row" style="opacity:0.45">
+    rows+=`<div class="lb-row" style="opacity:0.4">
       <span class="lb-rank">—</span>
       <span class="lb-name">${esc(p)}</span>
       <div class="lb-stats">
         <div class="lb-stat w"><div class="val">—</div><div class="sub">W</div></div>
         <div class="lb-stat l"><div class="val">—</div><div class="sub">L</div></div>
-        <div class="lb-stat pct"><div class="val">—</div><div class="sub">Win%</div></div>
+        <div class="lb-stat pt"><div class="val">—</div><div class="sub">+/−</div></div>
       </div>
     </div>`;
   });
 
   lbOut.innerHTML=`<div class="lb-card">
-    <div class="lb-head">
-      <span>Player</span>
+    <div class="lb-head"><span>Player</span>
       <div class="lb-head-cols">
         <div class="lb-head-col">W</div>
         <div class="lb-head-col">L</div>
-        <div class="lb-head-col">Win%</div>
+        <div class="lb-head-col">+/−</div>
       </div>
-    </div>
-    ${rows}
-  </div>`;
+    </div>${rows}</div>`;
 }
 
 function resetScores(){
-  if(!confirm('Clear all scores for tonight? The schedule stays, just the results are reset.')) return;
-  results={};
-  saveSchedule();
-  renderSchedule();
-  renderLeaderboard();
-  updateHeaderSub();
+  if(!confirm('Clear all scores? The schedule stays, only results are cleared.'))return;
+  scores={}; saveScores(); renderSchedule(); renderLeaderboard(); updateHeaderSub();
 }
 
-// ── Wire up static buttons ────────────────────────────────────────────────
+// ── Wire up ───────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded',()=>{
-  bindBtn(document.getElementById('btn-all'),          ()=>{ roster.forEach(p=>p.active=true);  saveRoster(); renderRoster(); });
-  bindBtn(document.getElementById('btn-none'),         ()=>{ roster.forEach(p=>p.active=false); saveRoster(); renderRoster(); });
-  bindBtn(document.getElementById('btn-add'),          ()=>doAdd());
-  bindBtn(document.getElementById('gen-btn'),          ()=>{ if(!document.getElementById('gen-btn').disabled) generate(); });
-  bindBtn(document.getElementById('btn-regen'),        ()=>generate());
-  bindBtn(document.getElementById('btn-reset'),        ()=>resetScores());
-  bindBtn(document.getElementById('nav-roster'),       ()=>switchTab('roster'));
-  bindBtn(document.getElementById('nav-schedule'),     ()=>switchTab('schedule'));
-  bindBtn(document.getElementById('nav-stats'),        ()=>switchTab('stats'));
-  bindBtn(document.getElementById('btn-dismiss-banner'),()=>dismissBanner());
+  bindBtn(document.getElementById('btn-all'),           ()=>{ roster.forEach(p=>p.active=true);  saveRoster(); renderRoster(); });
+  bindBtn(document.getElementById('btn-none'),          ()=>{ roster.forEach(p=>p.active=false); saveRoster(); renderRoster(); });
+  bindBtn(document.getElementById('btn-add'),           ()=>doAdd());
+  bindBtn(document.getElementById('gen-btn'),           ()=>{ if(!document.getElementById('gen-btn').disabled) generate(); });
+  bindBtn(document.getElementById('btn-regen'),         ()=>generate());
+  bindBtn(document.getElementById('btn-reset'),         ()=>resetScores());
+  bindBtn(document.getElementById('nav-roster'),        ()=>switchTab('roster'));
+  bindBtn(document.getElementById('nav-schedule'),      ()=>switchTab('schedule'));
+  bindBtn(document.getElementById('nav-stats'),         ()=>switchTab('stats'));
+  bindBtn(document.getElementById('btn-dismiss-banner'),()=>{ store.set(KEY_BANNER,'1'); document.getElementById('install-banner').style.display='none'; });
 
   document.getElementById('courts-slider').addEventListener('input', updateStatus);
   document.getElementById('new-name').addEventListener('keydown', e=>{ if(e.key==='Enter'){e.preventDefault();doAdd();} });
 
-  loadAll();
-  renderRoster();
-  renderSchedule();
-  updateHeaderSub();
-  initBanner();
+  loadAll(); renderRoster(); renderSchedule(); updateHeaderSub(); initBanner();
 });
 </script>
 </body>
